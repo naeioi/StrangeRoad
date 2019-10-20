@@ -16,8 +16,8 @@ public class InGameScript : MonoBehaviour
     {
         scoreInt = 0;
         SetScoreTxt(0);
-        recScore.anchoredPosition = from;
-        recScore.localScale = fromScale;
+        // recScore.anchoredPosition = from;
+        // recScore.localScale = fromScale;
         SetActive(isActive);
     }
 
@@ -36,7 +36,7 @@ public class InGameScript : MonoBehaviour
     public void UpScoreTxt()
     {
         scoreInt++;
-        SetScoreTxt(scoreInt);
+        SetScoreTxt(scoreInt * 100);
     }
 
     public void SetScoreTxt(int value)
@@ -46,7 +46,7 @@ public class InGameScript : MonoBehaviour
 
     public void MoveScoreDown()
     {
-        StartCoroutine(AnimScore());
+        // StartCoroutine(AnimScore());
     }
 
     IEnumerator AnimScore()
