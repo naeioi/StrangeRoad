@@ -49,8 +49,8 @@ public class RoadControl : MonoBehaviour
         listPointActive.Add(new Vector3(0, 0, 0));
         listPointActive.Add(new Vector3(0, 0, 14));
        
-        listType.Add(Random.value > 0.5f);
-        listType.Add(Random.value > 0.5f);
+        listType.Add(true);
+        listType.Add(true);
         CreatePath(listPointActive[listPointActive.Count - 2], listPointActive[listPointActive.Count - 1], listType[listType.Count - 2], true);
 
         for (int i = 0; i < firstRoads; i++)
@@ -77,7 +77,7 @@ public class RoadControl : MonoBehaviour
        
 
         listPointActive.Add(listPointActive[listPointActive.Count - 1] + newPath);
-        listType.Add(Random.value > 0.5f);
+        listType.Add(true);
         Vector3 p1 = listPointActive[listPointActive.Count - 3];
         Vector3 p2 = listPointActive[listPointActive.Count - 2];
         Vector3 p3 = listPointActive[listPointActive.Count - 1];
