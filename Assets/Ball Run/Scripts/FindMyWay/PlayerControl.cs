@@ -20,6 +20,7 @@ public class PlayerControl : MonoBehaviour
 
     void Awake()
     {
+        speed = 5;
         startPoint = new Vector3(0, transform.position.y, 0);
         targetPos = MainObjControl.Instant.roadCrt.listPointActive[0] + startPoint;
         currentType = MainObjControl.Instant.roadCrt.listType[0];
