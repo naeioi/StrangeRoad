@@ -31,6 +31,7 @@ public class RoadControl : MonoBehaviour
     void Awake()
     {
         player = MainObjControl.Instant.playerCtrl;
+
         RoadUnit rootRoad = ExtendPath(null, 1);
         player.currentRoad = rootRoad;
     }

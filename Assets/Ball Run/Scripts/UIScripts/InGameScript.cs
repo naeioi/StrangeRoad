@@ -30,12 +30,12 @@ public class InGameScript : MonoBehaviour
         
     public void Pause()
     {
-        MainCanvas.Main.pauseScript.PauseGame();
+        MainCanvas.Instance.pauseScript.PauseGame();
     }
 
-    public void UpScoreTxt()
+    public void IncrScore(int value = 1)
     {
-        scoreInt++;
+        scoreInt += value;
         SetScoreTxt(scoreInt * 100);
     }
 

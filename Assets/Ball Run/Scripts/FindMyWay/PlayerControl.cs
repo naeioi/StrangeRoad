@@ -9,6 +9,7 @@ public class PlayerControl : MonoBehaviour
     public Material playerMat;
     public Color c1;
     public Color c2;
+    public Color cSmash;
 
     public GameDefine.Direction direction;
 
@@ -26,6 +27,15 @@ public class PlayerControl : MonoBehaviour
     public Rigidbody rigidBody;
     Vector3 targetOrient;
     public bool running;
+    public bool isSmashing;
+
+    public bool smashing
+    {
+        get
+        {
+            return isSmashing;
+        }
+    }
 
     Vector3 velocity
     {
@@ -60,7 +70,7 @@ public class PlayerControl : MonoBehaviour
 
     readonly Vector3[] RotationsByDirection =
     {
-        Vector3.back,
+        Vector3.forward,
         Vector3.back,
         Vector3.right
     };
@@ -75,11 +85,11 @@ public class PlayerControl : MonoBehaviour
     void Awake()
     {
         isGameover = false;
+        isSmashing = false;
     }
 
     private void Start()
     {
-        Run();
     }
 
     public void Stop()
@@ -97,7 +107,16 @@ public class PlayerControl : MonoBehaviour
     private void Update()
     {
         transform.position += velocity * Time.deltaTime;
+        // Move ball to the center of the track
+        Vector3 pathCenter = transform.position;
+        if (currentRoad.direction == GameDefine.Direction.Forward)
+            pathCenter.x = currentRoad.startPoint.x;
+        else
+            pathCenter.z = currentRoad.startPoint.z;
+        transform.position = Vector3.Lerp(transform.position, pathCenter, 2 * Time.deltaTime);
+
         transform.rotation = Quaternion.Lerp(transform.rotation, orientation, Time.deltaTime * speedOrient);
+        rigidBody.angularVelocity = angularVelocity;
     }
 
     public void Run()
@@ -118,7 +137,7 @@ public class PlayerControl : MonoBehaviour
         }
         else
         {
-            MainCanvas.Main.inGameScript.UpScoreTxt();
+            MainCanvas.Instance.inGameScript.IncrScore();
         }
     }
 
@@ -181,7 +200,22 @@ public class PlayerControl : MonoBehaviour
         MainObjControl.Instant.boomCtrl.ShowPlayerBoom(isleft, blockMat);
 
         yield return new WaitForSeconds(0.1f);
-        MainCanvas.Main.lostScript.GameOver();
+        MainCanvas.Instance.lostScript.GameOver();
+    }
+
+    public void SetSmash(bool isSmashing)
+    {
+        this.isSmashing = isSmashing;
+
+        if (isSmashing)
+        {
+            playerMat.SetColor("_Color", cSmash);
+        }
+        else
+        {
+            // Assume always blue
+            playerMat.SetColor("_Color", c1);
+        }
     }
 
     IEnumerator ChangeColor(bool isType1)

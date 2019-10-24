@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using UnityEngine.EventSystems;
 public class ArrowControl : MonoBehaviour
 {
     public GameObject arrowPrefab;
@@ -16,7 +16,7 @@ public class ArrowControl : MonoBehaviour
 
     bool isDirect0;
 
-    ArrowUnit currentArrow
+    public ArrowUnit currentArrow
     {
         get
         {
@@ -48,8 +48,8 @@ public class ArrowControl : MonoBehaviour
 
     void Update()
     {
-        // if (Input.GetMouseButtonDown(0) && !isGameOver && MainState.GetState == MainState.State.Ingame)
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject() && !isGameOver && MainState.GetState == MainState.State.Ingame)
+        // if (Input.GetMouseButtonDown(0))
         {
             if (!roting)
             {

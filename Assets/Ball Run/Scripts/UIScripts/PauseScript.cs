@@ -13,7 +13,7 @@ public class PauseScript : MonoBehaviour
 
     public void PauseGame()
     {
-        MainCanvas.Main.faderScript.Fade(new FaderControl.Callback0(Middle));
+        MainCanvas.Instance.faderScript.Fade(new FaderControl.Callback0(Middle));
     }
 
     void Middle()
@@ -25,7 +25,7 @@ public class PauseScript : MonoBehaviour
 
     public void UnPause()
     {
-        MainCanvas.Main.faderScript.Fade(new FaderControl.Callback0(MidleUnPause));
+        MainCanvas.Instance.faderScript.Fade(new FaderControl.Callback0(MidleUnPause));
     }
 
     void MidleUnPause()
@@ -37,7 +37,7 @@ public class PauseScript : MonoBehaviour
 
     public void GoHome()
     {
-        MainCanvas.Main.faderScript.Fade(new FaderControl.Callback0(MidleHome));
+        MainCanvas.Instance.faderScript.Fade(new FaderControl.Callback0(MidleHome));
     }
 
     void MidleHome()
@@ -51,7 +51,7 @@ public class PauseScript : MonoBehaviour
 
     public void Restart()
     {
-        MainCanvas.Main.faderScript.Fade(new FaderControl.Callback0(MidleRestart));
+        MainCanvas.Instance.faderScript.Fade(new FaderControl.Callback0(MidleRestart));
     }
 
     void MidleRestart()

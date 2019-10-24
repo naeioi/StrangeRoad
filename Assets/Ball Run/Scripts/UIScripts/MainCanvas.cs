@@ -22,7 +22,7 @@ public class MainCanvas : MonoBehaviour
         Reset(false);
     }
 
-    public static MainCanvas Main
+    public static MainCanvas Instance
     {
         get { return mainCanvas; }
     }
