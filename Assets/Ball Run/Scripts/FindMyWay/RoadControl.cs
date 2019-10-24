@@ -26,29 +26,13 @@ public class RoadControl : MonoBehaviour
     int countDisable;
 
     public GameDefine.Direction turn;
+    public PlayerControl player;
 
     void Awake()
     {
-        ExtendPath(null, 1);
-        // CreateRoad(Vector3.zero, GameDefine.Direction.Forward, 14, true);
-        // ExtendPath(Vector3.zero, GameDefine.Direction.Forward, 14);
-        // RandTurn();
-    }
-
-    public void setArrow()
-    {
-        Vector3 p1 = listPointActive[listPointActive.Count - 3];
-        Vector3 p2 = listPointActive[listPointActive.Count - 2];
-        Vector3 p3 = listPointActive[listPointActive.Count - 1];
-        MainObjControl.Instant.arrowCtrl.SetNewArrow(p1, p2, p3);
-    }
-
-    public void PlayerCall()
-    {
-        setArrow();
-
-        RemovePoint();
-        AddNewPoint(false);        
+        player = MainObjControl.Instant.playerCtrl;
+        RoadUnit rootRoad = ExtendPath(null, 1);
+        player.currentRoad = rootRoad;
     }
 
     void CreateFirstRoad()
@@ -406,7 +390,7 @@ public class RoadControl : MonoBehaviour
         if (road.arrow == null)
         {
             Vector3 crossingPoint = road.startPoint + road.length * RoadDirections[(int)road.direction];
-            ArrowUnit arrow = MainObjControl.Instant.arrowCtrl.CreateFork(crossingPoint, road.direction);
+            ArrowUnit arrow = MainObjControl.Instant.arrowCtrl.CreateArrow(crossingPoint, road.direction);
             float[] nextLengths = { GameDefine.roadRandSize, GameDefine.roadRandSize };
             bool[] colors = { Random.value > 0.5 ? true : false, true };
             colors[1] = !colors[0];

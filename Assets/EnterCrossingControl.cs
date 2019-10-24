@@ -8,6 +8,7 @@ public class EnterCrossingControl : MonoBehaviour
     PlayerControl ball;
     BoxCollider collider;
     RoadControl roadCtrl;
+    PlayerControl playerCtrl;
 
     // Start is called before the first frame update
     void Start()
@@ -15,6 +16,7 @@ public class EnterCrossingControl : MonoBehaviour
         ball = MainObjControl.Instant.playerCtrl;
         collider = GetComponent<BoxCollider>();
         roadCtrl = MainObjControl.Instant.roadCtrl;
+        playerCtrl = MainObjControl.Instant.playerCtrl;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -22,13 +24,14 @@ public class EnterCrossingControl : MonoBehaviour
         StartCoroutine(GuideBall());
 
         // Remove paths on the other direction
-        GameDefine.Direction oppDirection = arrow.GetOppositeDirection();
-        foreach (RoadUnit road in arrow.road.next)
-            if (road.direction == oppDirection)
-            {
-                roadCtrl.RemovePath(road, 1);
-                break;
-            }
+        GameDefine.Direction oppDir = arrow.GetOppositeDirection();
+        RoadUnit oppRoad = arrow.road.GetNextByDirection(oppDir);
+        roadCtrl.RemovePath(oppRoad, 1);
+
+        // Update player
+        GameDefine.Direction aheadDir = arrow.GetDirection();
+        RoadUnit aheadRoad = arrow.road.GetNextByDirection(aheadDir);
+        playerCtrl.currentRoad = aheadRoad;
     }
 
     IEnumerator GuideBall()

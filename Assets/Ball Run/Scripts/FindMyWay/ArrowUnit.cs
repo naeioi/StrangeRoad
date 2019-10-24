@@ -12,7 +12,7 @@ public class ArrowUnit : MonoBehaviour
     public Transform bridge;
     public Transform bridgeR;
     public float duration;
-    bool roting;
+    bool rotating;
     int turn;
 
     readonly Vector3[] RotationsByDirection =
@@ -21,6 +21,22 @@ public class ArrowUnit : MonoBehaviour
         new Vector3(0, 180, 0), // Right
         new Vector3(0, 90, 0),  // Forward
     };
+
+    Vector3 targetRotation
+    {
+        get
+        {
+            return RotationsByDirection[(int)directions[turn]];
+        }
+    }
+
+    Vector3 oppositeRotation
+    {
+        get
+        {
+            return RotationsByDirection[(int)directions[1 - turn]];
+        }
+    }
 
     void Start()
     {
@@ -67,9 +83,18 @@ public class ArrowUnit : MonoBehaviour
         bridgeR.transform.eulerAngles = initRot;
     }
 
+    public void StartToggle()
+    {
+        if (!rotating)
+        {
+            turn = 1 - turn;
+            StartCoroutine(RotateY(oppositeRotation, targetRotation));
+        }
+    }
+
     public void StartRotate(Vector3 from, Vector3 to)
     {
-        if (!roting)
+        if (!rotating)
         {
             StartCoroutine(RotateY(from, to));
         }
@@ -77,7 +102,7 @@ public class ArrowUnit : MonoBehaviour
 
     IEnumerator RotateY(Vector3 from, Vector3 to)
     {
-        roting = true;
+        rotating = true;
         float elapsed = 0;
         while (elapsed <= duration)
         {
@@ -89,7 +114,7 @@ public class ArrowUnit : MonoBehaviour
         }
         bridgeR.localEulerAngles = to;
         arrow.localEulerAngles = to;
-        roting = false;
+        rotating = false;
     }
 
 }

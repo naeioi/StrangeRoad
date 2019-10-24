@@ -22,6 +22,7 @@ public class PlayerControl : MonoBehaviour
     public bool isGameover = false;
     public bool isTest;
 
+    public RoadUnit currentRoad;
     public Rigidbody rigidBody;
     Vector3 targetOrient;
     public bool running;
@@ -35,7 +36,7 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    Vector3 orientation
+    Quaternion orientation
     {
         get
         {
@@ -64,11 +65,11 @@ public class PlayerControl : MonoBehaviour
         Vector3.right
     };
 
-    readonly Vector3[] OrientByDirection =
+    readonly Quaternion[] OrientByDirection =
     {
-        new Vector3(0, -90, 0),
-        new Vector3(0, 90, 0),
-        Vector3.zero
+        Quaternion.Euler(0, -90, 0),
+        Quaternion.Euler(0, 90, 0),
+        Quaternion.Euler(0, 0, 0)
     };
 
     void Awake()
@@ -96,7 +97,7 @@ public class PlayerControl : MonoBehaviour
     private void Update()
     {
         transform.position += velocity * Time.deltaTime;
-        transform.eulerAngles = Vector3.Lerp(transform.eulerAngles, orientation, Time.deltaTime * speedOrient);
+        transform.rotation = Quaternion.Lerp(transform.rotation, orientation, Time.deltaTime * speedOrient);
     }
 
     public void Run()

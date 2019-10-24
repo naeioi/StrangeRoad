@@ -53,4 +53,17 @@ public class RoadUnit : MonoBehaviour
         transform.localScale = scale;
         transform.position = pos;
     }
+
+    public RoadUnit GetNextByDirection(GameDefine.Direction dir)
+    {
+        if (next == null) return null;
+
+        foreach (RoadUnit road in next)
+            if (road.direction == dir)
+            {
+                return road;
+            }
+
+        return null;
+    }
 }
