@@ -13,7 +13,7 @@ public class ListenBackButton : MonoBehaviour {
                     //Application.Quit();
                     break;
                 case MainState.State.Ingame:
-                    MainCanvas.Main.pauseScript.PauseGame();
+                    MainCanvas.Instance.pauseScript.PauseGame();
                     break;
                 case MainState.State.GameOver:
                     BackHome();
@@ -25,11 +25,11 @@ public class ListenBackButton : MonoBehaviour {
 
     void BackHome()
     {
-        MainCanvas.Main.faderScript.Fade(new FaderControl.Callback0(MidleHome));
+        MainCanvas.Instance.faderScript.Fade(new FaderControl.Callback0(MidleHome));
     }
 
     void MidleHome()
     {
-        MainCanvas.Main.Reset(false);
+        MainCanvas.Instance.Reset(false);
     }
 }

@@ -13,9 +13,19 @@ public class BlockUnit : MonoBehaviour
 
     Material mat;
 
+    public RoadUnit road;
+    public Vector3 crossingPos;
+    public GameDefine.Direction direction;
+    public bool color;
+
     void Awake()
     {
         mat = GetComponent<MeshRenderer>().material;
+    }
+
+    public void SetVisible(bool visible)
+    {
+        GetComponent<MeshRenderer>().enabled = visible;
     }
 
     public void SetColor(bool isType1)

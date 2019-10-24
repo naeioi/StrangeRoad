@@ -28,7 +28,7 @@ public class OrangeMest : MonoBehaviour
 
     public void PlayerBoom(bool isLeft, Material blockMat)
     {
-        transform.position = MainObjControl.Instant.playerCrt.transform.position;
+        transform.position = MainObjControl.Instant.playerCtrl.transform.position;
         transform.localScale = new Vector3(0.8f, 0.8f, 0.3f);
 
         if (isLeft)
@@ -80,7 +80,7 @@ public class OrangeMest : MonoBehaviour
 
     void SetBoom()
     {
-        MainObjControl.Instant.boomControl.SetBoom(gameObject);
+        MainObjControl.Instant.boomCtrl.SetBoom(gameObject);
     }
 
     IEnumerator Jump(Transform box, Vector3 direct)

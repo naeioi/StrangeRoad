@@ -5,226 +5,130 @@ public class PlayerControl : MonoBehaviour
 {
     public float speed;
     public float speedR;
+    public float speedOrient;
     public Material playerMat;
     public Color c1;
     public Color c2;
-    public float duration;
-    Vector3 startPoint;
-    Vector3 currentPos;
-    Vector3 targetPos;
-    bool currentType;
-    bool isFirst = true;
-    IEnumerator IEGo;
+    public Color cSmash;
+
+    public GameDefine.Direction direction;
+
     public bool isGameover = false;
-    public bool isTest;
+
+    public RoadUnit currentRoad;
+    public Rigidbody rigidBody;
+    Vector3 targetOrient;
+    public bool running;
+    public bool isSmashing;
+
+    public bool smashing
+    {
+        get
+        {
+            return isSmashing;
+        }
+    }
+
+    Vector3 velocity
+    {
+        get
+        {
+            // return Vector3.zero;
+            return running ? speed * MovementsByDirection[(int)direction] : Vector3.zero;
+        }
+    }
+
+    Quaternion orientation
+    {
+        get
+        {
+            return OrientByDirection[(int)direction];
+        }
+    }
+
+    Vector3 angularVelocity
+    {
+        get {
+            return running? speedR * RotationsByDirection[(int)direction] : Vector3.zero;
+        }
+}
+
+    readonly Vector3[] MovementsByDirection =
+    {
+        Vector3.left,
+        Vector3.right,
+        Vector3.forward
+    };
+
+    readonly Vector3[] RotationsByDirection =
+    {
+        Vector3.forward,
+        Vector3.back,
+        Vector3.right
+    };
+
+    readonly Quaternion[] OrientByDirection =
+    {
+        Quaternion.Euler(0, -90, 0),
+        Quaternion.Euler(0, 90, 0),
+        Quaternion.Euler(0, 0, 0)
+    };
 
     void Awake()
     {
-        speed = 5;
-        startPoint = new Vector3(0, transform.position.y, 0);
-        targetPos = MainObjControl.Instant.roadCrt.listPointActive[0] + startPoint;
-        currentType = MainObjControl.Instant.roadCrt.listType[0];
-        HardChangeColor(currentType);
         isGameover = false;
+        isSmashing = false;
+    }
+
+    private void Start()
+    {
+    }
+
+    public void Stop()
+    {
+        running = false;
+        rigidBody.angularVelocity = Vector3.zero;
+    }
+
+    public void SetDirection(GameDefine.Direction direction)
+    {
+        this.direction = direction;
+        rigidBody.angularVelocity = angularVelocity;
+    }
+
+    private void Update()
+    {
+        transform.position += velocity * Time.deltaTime;
+        // Move ball to the center of the track
+        Vector3 pathCenter = transform.position;
+        if (currentRoad.direction == GameDefine.Direction.Forward)
+            pathCenter.x = currentRoad.startPoint.x;
+        else
+            pathCenter.z = currentRoad.startPoint.z;
+        transform.position = Vector3.Lerp(transform.position, pathCenter, 2 * Time.deltaTime);
+
+        transform.rotation = Quaternion.Lerp(transform.rotation, orientation, Time.deltaTime * speedOrient);
+        rigidBody.angularVelocity = angularVelocity;
     }
 
     public void Run()
     {
-        StartCoroutine(Go());
+        running = true;
+        SetDirection(direction);
     }
 
-    IEnumerator Go()
+    public void SetSmash(bool isSmashing)
     {
-        while (!isGameover)
+        this.isSmashing = isSmashing;
+
+        if (isSmashing)
         {
-            currentPos = targetPos;
-            targetPos = MainObjControl.Instant.roadCrt.listPointActive[1] + startPoint;
-            if (isFirst)
-            {
-                isFirst = false;
-            }
-            else
-            {
-                if (!isTest)
-                {
-                    CheckGameOver(currentPos, targetPos);
-                }
-            }
-
-            if (!isGameover)
-            {
-                StartCoroutine(ChangeColor(MainObjControl.Instant.roadCrt.listType[1]));
-                MainObjControl.Instant.camCrt.NewTarget(targetPos);
-                MainObjControl.Instant.roadCrt.PlayerCall();
-
-
-                transform.eulerAngles = Vector3.zero;
-                float duration;
-                Vector3 direct;
-                if (currentPos.x == targetPos.x)
-                {
-                    duration = Mathf.Abs(currentPos.z - targetPos.z) / speed;
-                    direct = Vector3.right;
-                }
-                else
-                {
-                    duration = Mathf.Abs(currentPos.x - targetPos.x) / speed;
-                    if (currentPos.x > targetPos.x)
-                    {
-                        direct = Vector3.forward;
-
-                    }
-                    else
-                    {
-                        direct = Vector3.back;
-                    }
-
-                }
-
-                float timer = 0;
-
-                while (timer < duration)
-                {
-                    timer += Time.deltaTime;
-                    transform.position = Vector3.Lerp(currentPos, targetPos, timer / duration);
-                    transform.Rotate(direct * speedR * Time.deltaTime);
-                    yield return null;
-                }
-            }
-        }
-
-    }
-
-    void CheckGameOver(Vector3 pStart, Vector3 pEnd)
-    {
-        Vector3 arrowDirect = MainObjControl.Instant.arrowCrt.GetDirect();
-        if (arrowDirect != (pEnd - pStart).normalized)
-        {
-            isGameover = true;
-           
-            MainObjControl.Instant.arrowCrt.isGameOver = true;
-            StartCoroutine(GoDie());
+            playerMat.SetColor("_Color", cSmash);
         }
         else
         {
-            MainCanvas.Main.inGameScript.UpScoreTxt();
-        }
-    }
-
-    IEnumerator GoDie()
-    {
-        float timer = 0;
-        float distcane = GameDefine.blockDistance - 0.6f;
-        duration = distcane / speed;
-
-        Vector3 startPos = currentPos;
-        Vector3 endPos = MainObjControl.Instant.roadCrt.GetEndPos();
-        Vector3 newEndPos;
-
-        Vector3 direct;
-        if (startPos.x == endPos.x)
-        {
-            direct = Vector3.right;
-            newEndPos = Vector3.forward;
-        }
-        else
-        {
-            if (startPos.x > endPos.x)
-            {
-                direct = Vector3.forward;
-                newEndPos = Vector3.left;
-            }
-            else
-            {
-                direct = Vector3.back;
-                newEndPos = Vector3.right;
-            }
-        }
-
-        newEndPos = newEndPos * distcane + startPos;
-        transform.eulerAngles = Vector3.zero;
-
-        while (timer < duration)
-        {
-            timer += Time.deltaTime;
-            transform.position = Vector3.Lerp(startPos, newEndPos, timer / duration);
-            transform.Rotate(direct * speedR * Time.deltaTime);
-            yield return null;
-        }
-        transform.position = newEndPos;
-        MainAudio.Main.PlaySound(TypeAudio.SoundStop);
-        gameObject.GetComponent<MeshRenderer>().enabled = false;
-
-        bool isleft;
-
-        if (direct == Vector3.back || direct == Vector3.forward)
-        {
-            isleft = false;
-        }
-        else
-        {
-            isleft = true;
-        }
-        Material blockMat = MainObjControl.Instant.roadCrt.GetEndMat();
-
-        MainObjControl.Instant.boomControl.ShowPlayerBoom(isleft, blockMat);
-
-        yield return new WaitForSeconds(0.1f);
-        MainCanvas.Main.lostScript.GameOver();
-    }
-
-    IEnumerator ChangeColor(bool isType1)
-    {
-        float timer = 0;
-        BlockUnit unit = MainObjControl.Instant.roadCrt.listBlock[0];
-        if (currentType != isType1)
-        {
-            yield return new WaitForSeconds(0.4f);
-
-
-            MainObjControl.Instant.colorBlockCrt.SetBlock(unit);
-            MainObjControl.Instant.boomControl.ShowBoom(unit.transform);
-            MainAudio.Main.PlaySound(TypeAudio.SoundScore);
-            unit.transform.position = new Vector3(0, -100, 0);
-            while (timer < duration)
-            {
-                timer += Time.deltaTime;
-                Color newColor;
-
-                if (isType1)
-                {
-                    newColor = Color.Lerp(c2, c1, timer / duration);
-                }
-                else
-                {
-                    newColor = Color.Lerp(c1, c2, timer / duration);
-                }
-                playerMat.SetColor("_Color", newColor);
-                yield return null;
-            }
-
-            currentType = isType1;
-        }
-        else
-        {
-            yield return new WaitForSeconds(0.4f);
-
-            MainObjControl.Instant.colorBlockCrt.SetBlock(unit);
-            MainObjControl.Instant.boomControl.ShowBoom(unit.transform);
-            unit.transform.position = new Vector3(0, -100, 0);
-            MainAudio.Main.PlaySound(TypeAudio.SoundScore);
-        }
-    }
-
-    void HardChangeColor(bool isType1)
-    {
-        if (isType1)
-        {
+            // Assume always blue
             playerMat.SetColor("_Color", c1);
-        }
-        else
-        {
-            playerMat.SetColor("_Color", c2);
         }
     }
 }

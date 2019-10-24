@@ -19,8 +19,23 @@ public class LostScript : MonoBehaviour
         EffectControl.FadeOutCanvasNow(bestText.gameObject);
     }
 
+    void BlastBall()
+    {
+        PlayerControl player = MainObjControl.Instant.playerCtrl;
+        player.Stop();
+
+        MainAudio.Main.PlaySound(TypeAudio.SoundStop);
+
+        player.gameObject.GetComponentInChildren<MeshRenderer>().enabled = false;
+
+        Material blockMat = player.currentRoad.block.GetComponent<MeshRenderer>().material;
+        MainObjControl.Instant.boomCtrl.ShowPlayerBoom(player.direction != GameDefine.Direction.Forward, blockMat);
+    }
+
     public void GameOver()
     {
+        BlastBall();
+
         MainState.SetState(MainState.State.Waiting);
         int time = Settings.GetTimer;
         if (time >= 4)
@@ -41,10 +56,10 @@ public class LostScript : MonoBehaviour
 
     IEnumerator AnimGameOver()
     {
-        MainCanvas.Main.inGameScript.MoveScoreDown();
+        MainCanvas.Instance.inGameScript.MoveScoreDown();
         yield return new WaitForSeconds(0.5f);
 
-        int score = MainCanvas.Main.inGameScript.scoreInt;
+        int score = MainCanvas.Instance.inGameScript.scoreInt;
         if (score > Settings.GetBest)
         {
             Settings.SetBest(score);
@@ -52,7 +67,6 @@ public class LostScript : MonoBehaviour
 
         SetBestScore(Settings.GetBest);
 
-        MainObjControl.Instant.camCrt.allow = false;
         StartCoroutine(EffectControl.FadeInCanvas(bestText.gameObject, 0.5f));
         yield return new WaitForSeconds(0.2f);
         StartCoroutine(EffectControl.FadeInCanvas(tap, 0.5f));
@@ -68,13 +82,13 @@ public class LostScript : MonoBehaviour
             && !EventSystem.current.IsPointerOverGameObject(0))
         {
             MainAudio.Main.PlaySound(TypeAudio.SoundClick);
-            MainCanvas.Main.faderScript.Fade(new FaderControl.Callback0(MidleTryAgain));
+            MainCanvas.Instance.faderScript.Fade(new FaderControl.Callback0(MidleTryAgain));
         }
     }
 
     public void HomeButton()
     {
-        MainCanvas.Main.faderScript.Fade(new FaderControl.Callback0(MidleHome));
+        MainCanvas.Instance.faderScript.Fade(new FaderControl.Callback0(MidleHome));
     }
 
     void MidleTryAgain()
@@ -89,13 +103,13 @@ public class LostScript : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
-        MainCanvas.Main.Reset(true);
+        MainCanvas.Instance.Reset(true);
     }
 
     void MidleHome()
     {
         Application.LoadLevel(Application.loadedLevel);
-        MainCanvas.Main.Reset(false);
+        MainCanvas.Instance.Reset(false);
        
     }
 
