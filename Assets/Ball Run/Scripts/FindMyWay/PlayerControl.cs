@@ -5,11 +5,15 @@ public class PlayerControl : MonoBehaviour
 {
     public float speed;
     public float speedR;
+    public float speedOrient;
     public Material playerMat;
     public Color c1;
     public Color c2;
+
+    public GameDefine.Direction direction;
+
     public float duration;
-    Vector3 startPoint;
+    public Vector3 startPoint;
     Vector3 currentPos;
     Vector3 targetPos;
     bool currentType;
@@ -18,91 +22,97 @@ public class PlayerControl : MonoBehaviour
     public bool isGameover = false;
     public bool isTest;
 
+    public Rigidbody rigidBody;
+    Vector3 targetOrient;
+    public bool running;
+
+    Vector3 velocity
+    {
+        get
+        {
+            // return Vector3.zero;
+            return running ? speed * MovementsByDirection[(int)direction] : Vector3.zero;
+        }
+    }
+
+    Vector3 orientation
+    {
+        get
+        {
+            return OrientByDirection[(int)direction];
+        }
+    }
+
+    Vector3 angularVelocity
+    {
+        get {
+            return running? speedR * RotationsByDirection[(int)direction] : Vector3.zero;
+        }
+}
+
+    readonly Vector3[] MovementsByDirection =
+    {
+        Vector3.left,
+        Vector3.right,
+        Vector3.forward
+    };
+
+    readonly Vector3[] RotationsByDirection =
+    {
+        Vector3.back,
+        Vector3.back,
+        Vector3.right
+    };
+
+    readonly Vector3[] OrientByDirection =
+    {
+        new Vector3(0, -90, 0),
+        new Vector3(0, 90, 0),
+        Vector3.zero
+    };
+
     void Awake()
     {
-        speed = 5;
-        startPoint = new Vector3(0, transform.position.y, 0);
-        targetPos = MainObjControl.Instant.roadCrt.listPointActive[0] + startPoint;
-        currentType = MainObjControl.Instant.roadCrt.listType[0];
-        HardChangeColor(currentType);
         isGameover = false;
+    }
+
+    private void Start()
+    {
+        Run();
+    }
+
+    public void Stop()
+    {
+        running = false;
+        rigidBody.angularVelocity = Vector3.zero;
+    }
+
+    public void SetDirection(GameDefine.Direction direction)
+    {
+        this.direction = direction;
+        rigidBody.angularVelocity = angularVelocity;
+    }
+
+    private void Update()
+    {
+        transform.position += velocity * Time.deltaTime;
+        transform.eulerAngles = Vector3.Lerp(transform.eulerAngles, orientation, Time.deltaTime * speedOrient);
     }
 
     public void Run()
     {
-        StartCoroutine(Go());
-    }
-
-    IEnumerator Go()
-    {
-        while (!isGameover)
-        {
-            currentPos = targetPos;
-            targetPos = MainObjControl.Instant.roadCrt.listPointActive[1] + startPoint;
-            if (isFirst)
-            {
-                isFirst = false;
-            }
-            else
-            {
-                if (!isTest)
-                {
-                    CheckGameOver(currentPos, targetPos);
-                }
-            }
-
-            if (!isGameover)
-            {
-                StartCoroutine(ChangeColor(MainObjControl.Instant.roadCrt.listType[1]));
-                MainObjControl.Instant.camCrt.NewTarget(targetPos);
-                MainObjControl.Instant.roadCrt.PlayerCall();
-
-
-                transform.eulerAngles = Vector3.zero;
-                float duration;
-                Vector3 direct;
-                if (currentPos.x == targetPos.x)
-                {
-                    duration = Mathf.Abs(currentPos.z - targetPos.z) / speed;
-                    direct = Vector3.right;
-                }
-                else
-                {
-                    duration = Mathf.Abs(currentPos.x - targetPos.x) / speed;
-                    if (currentPos.x > targetPos.x)
-                    {
-                        direct = Vector3.forward;
-
-                    }
-                    else
-                    {
-                        direct = Vector3.back;
-                    }
-
-                }
-
-                float timer = 0;
-
-                while (timer < duration)
-                {
-                    timer += Time.deltaTime;
-                    transform.position = Vector3.Lerp(currentPos, targetPos, timer / duration);
-                    transform.Rotate(direct * speedR * Time.deltaTime);
-                    yield return null;
-                }
-            }
-        }
-
+        running = true;
+        SetDirection(direction);
     }
 
     void CheckGameOver(Vector3 pStart, Vector3 pEnd)
     {
-        Vector3 arrowDirect = MainObjControl.Instant.arrowCrt.GetDirect();
+        Vector3 arrowDirect = MainObjControl.Instant.arrowCtrl.GetDirect();
         if (arrowDirect != (pEnd - pStart).normalized)
         {
             isGameover = true;
            
-            MainObjControl.Instant.arrowCrt.isGameOver = true;
+            MainObjControl.Instant.arrowCtrl.isGameOver = true;
             StartCoroutine(GoDie());
         }
         else
@@ -118,7 +128,7 @@ public class PlayerControl : MonoBehaviour
         duration = distcane / speed;
 
         Vector3 startPos = currentPos;
-        Vector3 endPos = MainObjControl.Instant.roadCrt.GetEndPos();
+        Vector3 endPos = MainObjControl.Instant.roadCtrl.GetEndPos();
         Vector3 newEndPos;
 
         Vector3 direct;
@@ -165,9 +175,9 @@ public class PlayerControl : MonoBehaviour
         {
             isleft = true;
         }
-        Material blockMat = MainObjControl.Instant.roadCrt.GetEndMat();
+        Material blockMat = MainObjControl.Instant.roadCtrl.GetEndMat();
 
-        MainObjControl.Instant.boomControl.ShowPlayerBoom(isleft, blockMat);
+        MainObjControl.Instant.boomCtrl.ShowPlayerBoom(isleft, blockMat);
 
         yield return new WaitForSeconds(0.1f);
         MainCanvas.Main.lostScript.GameOver();
@@ -176,14 +186,14 @@ public class PlayerControl : MonoBehaviour
     IEnumerator ChangeColor(bool isType1)
     {
         float timer = 0;
-        BlockUnit unit = MainObjControl.Instant.roadCrt.listBlock[0];
+        BlockUnit unit = MainObjControl.Instant.roadCtrl.listBlock[0];
         if (currentType != isType1)
         {
             yield return new WaitForSeconds(0.4f);
 
 
-            MainObjControl.Instant.colorBlockCrt.SetBlock(unit);
-            MainObjControl.Instant.boomControl.ShowBoom(unit.transform);
+            MainObjControl.Instant.blockCtrl.FreeBlock(unit);
+            MainObjControl.Instant.boomCtrl.ShowBoom(unit.transform);
             MainAudio.Main.PlaySound(TypeAudio.SoundScore);
             unit.transform.position = new Vector3(0, -100, 0);
             while (timer < duration)
@@ -209,8 +219,8 @@ public class PlayerControl : MonoBehaviour
         {
             yield return new WaitForSeconds(0.4f);
 
-            MainObjControl.Instant.colorBlockCrt.SetBlock(unit);
-            MainObjControl.Instant.boomControl.ShowBoom(unit.transform);
+            MainObjControl.Instant.blockCtrl.FreeBlock(unit);
+            MainObjControl.Instant.boomCtrl.ShowBoom(unit.transform);
             unit.transform.position = new Vector3(0, -100, 0);
             MainAudio.Main.PlaySound(TypeAudio.SoundScore);
         }

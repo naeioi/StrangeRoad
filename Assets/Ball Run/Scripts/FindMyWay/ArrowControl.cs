@@ -182,7 +182,7 @@ public class ArrowControl : MonoBehaviour
 
         int rand = Random.Range(0, 2);
         currentArrow.arrow.transform.eulerAngles = listDirect[rand];
-        currentArrow.roadR.transform.eulerAngles = listDirect[rand];
+        currentArrow.bridgeR.transform.eulerAngles = listDirect[rand];
         if (rand == 0)
         {
             isDirect0 = true;
@@ -220,5 +220,28 @@ public class ArrowControl : MonoBehaviour
         {
             return Vector3.forward;
         }
+    }
+
+    public ArrowUnit CreateFork(Vector3 forkPos, GameDefine.Direction pathDir)
+    {
+        GameDefine.Direction[] turns = new GameDefine.Direction[2];
+
+        if (pathDir == GameDefine.Direction.Forward)
+        {
+            turns[0] = GameDefine.Direction.Forward;
+            turns[1] = Random.value > 0.5 ? GameDefine.Direction.Right : GameDefine.Direction.Left;
+        }
+        else
+        {
+            turns[0] = pathDir;
+            turns[1] = GameDefine.Direction.Forward;
+        }
+
+        // TODO: Create Fork
+        ArrowUnit arrow = GetArrow();
+        arrow.SetPosition(forkPos, pathDir, turns);
+        arrow.directions = turns;
+
+        return arrow;
     }
 }

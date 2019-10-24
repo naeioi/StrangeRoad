@@ -22,6 +22,11 @@ public class GameDefine
         get{ return Random.Range(9.5f, 18.0f); }
     }
 
+    public enum Direction
+    {
+        Left, Right, Forward
+    }
+
     public static float roadDistance = 3.0f;
     public static float blockDistance = 4.0f;
 

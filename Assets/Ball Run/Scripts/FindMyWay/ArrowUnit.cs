@@ -3,17 +3,68 @@ using System.Collections;
 
 public class ArrowUnit : MonoBehaviour
 {
+    public float f;
+
+    public GameDefine.Direction[] directions;
+    public RoadUnit road;
 
     public Transform arrow;
-    public Transform road;
-    public Transform roadR;
+    public Transform bridge;
+    public Transform bridgeR;
     public float duration;
     bool roting;
+    int turn;
+
+    readonly Vector3[] RotationsByDirection =
+    {
+        Vector3.zero,           // Left
+        new Vector3(0, 180, 0), // Right
+        new Vector3(0, 90, 0),  // Forward
+    };
 
     void Start()
     {
-        road.localScale = new Vector3(GameDefine.roadDistance, GameDefine.roadTall, GameDefine.roadWidth);
-        road.localPosition = Vector3.left * 0.5f * (GameDefine.roadDistance + GameDefine.roadWidth);
+        bridge.localScale = new Vector3(GameDefine.roadDistance, GameDefine.roadTall, GameDefine.roadWidth);
+        bridge.localPosition = Vector3.left * 0.5f * (GameDefine.roadDistance + GameDefine.roadWidth);
+    }
+
+    public GameDefine.Direction GetDirection()
+    {
+        return directions[turn];
+    }
+
+    public GameDefine.Direction GetOppositeDirection()
+    {
+        return directions[1 - turn];
+    }
+
+    public void SetPosition(Vector3 pos, GameDefine.Direction pathDir, GameDefine.Direction[] turns)
+    {
+        this.directions = turns;
+
+        // Make arrow off track
+        Vector3 arrowOffset;
+        if (pathDir == GameDefine.Direction.Forward)
+        {
+            if (System.Array.IndexOf(turns, GameDefine.Direction.Left) != -1)
+                arrowOffset = Vector3.right * f;
+            else
+                arrowOffset = Vector3.left * f;
+        }
+        else
+        {
+            arrowOffset = Vector3.back * f;
+        }
+
+        arrowOffset.y = arrow.localPosition.y;
+        arrow.localPosition = arrowOffset;
+        transform.position = pos;
+
+        // Assign an initial rotation
+        turn = Random.Range(0, 2);
+        Vector3 initRot = RotationsByDirection[(int)turns[turn]];
+        arrow.transform.eulerAngles = initRot;
+        bridgeR.transform.eulerAngles = initRot;
     }
 
     public void StartRotate(Vector3 from, Vector3 to)
@@ -32,11 +83,11 @@ public class ArrowUnit : MonoBehaviour
         {
             elapsed += Time.deltaTime;
             Vector3 t = Vector3.Lerp(from, to, elapsed / duration);
-            roadR.localEulerAngles = t;
+            bridgeR.localEulerAngles = t;
             arrow.localEulerAngles = t;
             yield return null;
         }
-        roadR.localEulerAngles = to;
+        bridgeR.localEulerAngles = to;
         arrow.localEulerAngles = to;
         roting = false;
     }

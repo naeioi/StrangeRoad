@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CameraController : MonoBehaviour
+public class CameraControl : MonoBehaviour
 {
-
     public float speed;
     Vector3 direct;
     Vector3 target;
@@ -22,7 +21,6 @@ public class CameraController : MonoBehaviour
     {
         target = newTarget + direct;
     }
-
 
     void Update()
     {

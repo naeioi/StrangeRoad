@@ -52,7 +52,7 @@ public class LostScript : MonoBehaviour
 
         SetBestScore(Settings.GetBest);
 
-        MainObjControl.Instant.camCrt.allow = false;
+        MainObjControl.Instant.camCtrl.allow = false;
         StartCoroutine(EffectControl.FadeInCanvas(bestText.gameObject, 0.5f));
         yield return new WaitForSeconds(0.2f);
         StartCoroutine(EffectControl.FadeInCanvas(tap, 0.5f));

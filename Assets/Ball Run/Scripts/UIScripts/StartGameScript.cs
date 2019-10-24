@@ -77,8 +77,8 @@ public class StartGameScript : MonoBehaviour
     {
         MainState.SetState(MainState.State.Ingame);
         MainCanvas.Main.inGameScript.SetActive(true);
-        MainObjControl.Instant.playerCrt.Run();
-        MainObjControl.Instant.camCrt.allow = true;
+        MainObjControl.Instant.playerCtrl.Run();
+        MainObjControl.Instant.camCtrl.allow = true;
         SetActive(false);
 
     }
