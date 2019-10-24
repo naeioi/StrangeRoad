@@ -7,13 +7,11 @@ using UnityEngine.UI;
 public class MainObjControl : MonoBehaviour
 {
     static MainObjControl main;
-    public ColorControl colorCtrl;
  
     public BoomControl boomCtrl;
 
     public RoadControl roadCtrl;
     public PlayerControl playerCtrl;
-    public CameraControl camCtrl;
     public BlockControl blockCtrl;
     public ArrowControl arrowCtrl;
 

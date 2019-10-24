@@ -6,18 +6,25 @@ using TMPro;
 
 public class SmashBtnControl : MonoBehaviour
 {
-    PlayerControl player;
     TextMeshProUGUI text;
+
+    PlayerControl player
+    {
+        get
+        {
+            return MainObjControl.Instant.playerCtrl;
+        }
+    }
 
     private void Start()
     {
-        player = MainObjControl.Instant.playerCtrl;
         text = GetComponentInChildren<TextMeshProUGUI>();
     }
 
     public void Smash()
     {
-        StartCoroutine(DoSmash());
+        if (!player.smashing)
+            StartCoroutine(DoSmash());
     }
 
     IEnumerator DoSmash()
