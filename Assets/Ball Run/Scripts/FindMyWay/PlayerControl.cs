@@ -20,12 +20,20 @@ public class PlayerControl : MonoBehaviour
     Vector3 targetOrient;
     public bool running;
     public bool isSmashing;
+    public bool isSlowingDown;
 
     public bool smashing
     {
         get
         {
             return isSmashing;
+        }
+    }
+    public bool slowingDown
+    {
+        get
+        {
+            return isSlowingDown;
         }
     }
 
@@ -78,6 +86,7 @@ public class PlayerControl : MonoBehaviour
     {
         isGameover = false;
         isSmashing = false;
+        isSlowingDown = false;
     }
 
     private void Start()
@@ -129,6 +138,19 @@ public class PlayerControl : MonoBehaviour
         {
             // Assume always blue
             playerMat.SetColor("_Color", c1);
+        }
+    }
+    public void SetSlowDown(bool isSlowingDown)
+    {
+        this.isSlowingDown = isSlowingDown;
+
+        if (isSlowingDown)
+        {
+            speed = 2;
+        }
+        else
+        {
+            speed = 5;
         }
     }
 }
