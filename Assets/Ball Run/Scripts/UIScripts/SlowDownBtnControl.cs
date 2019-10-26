@@ -18,6 +18,7 @@ public class SlowDownBtnControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GetComponent<Image>().color = new Color(0.3f, 0.4f, 0.6f); // 初始按钮置灰
         text = GetComponentInChildren<TextMeshProUGUI>();
     }
 
@@ -30,21 +31,25 @@ public class SlowDownBtnControl : MonoBehaviour
     public void SlowDown()
     {
         if (!player.isSlowingDown) {
-            StartCoroutine(DoSlowDown());
+			MainCanvas.Instance.inGameScript.DecrScore();
+			StartCoroutine(DoSlowDown());
         }
     }
 
     IEnumerator DoSlowDown()
     {
         player.SetSlowDown(true);
+        GetComponent<Image>().color = new Color(1, 1, 1); // 道具按钮激活时还原为彩色
         text.fontSize = 72;
         for (int i = 5; i > 0; i--)
         {
             text.text = i.ToString() + "s";
             yield return new WaitForSeconds(1);
         }
-        text.fontSize = 36;
-        text.text = "Slow Down";
+        text.fontSize = 45;
+        //text.text = "Slow Down"; 
+        text.text = ""; // 清除读秒
         player.SetSlowDown(false);
+        GetComponent<Image>().color = new Color(0.3f, 0.4f, 0.6f); // 激活结束后按钮置灰
     }
 }

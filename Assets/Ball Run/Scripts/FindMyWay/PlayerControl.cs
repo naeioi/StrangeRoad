@@ -146,11 +146,11 @@ public class PlayerControl : MonoBehaviour
 
         if (isSlowingDown)
         {
-            speed = 2;
+            speed = 4;
         }
         else
         {
-            speed = 5;
+            speed = 10;
         }
     }
 }
