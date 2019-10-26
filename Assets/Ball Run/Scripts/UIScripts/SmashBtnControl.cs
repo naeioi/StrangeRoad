@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,6 +24,7 @@ public class SmashBtnControl : MonoBehaviour
     public void Smash()
     {
         if (!player.smashing)
+            MainCanvas.Instance.inGameScript.DecrScore();
             StartCoroutine(DoSmash());
     }
 

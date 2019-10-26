@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
@@ -36,6 +36,13 @@ public class InGameScript : MonoBehaviour
     public void IncrScore(int value = 1)
     {
         scoreInt += value;
+        SetScoreTxt(scoreInt * 100);
+    }
+    
+    //decrease score after tapping item button
+    public void DecrScore(int value = 1)
+    {
+        scoreInt -= value;
         SetScoreTxt(scoreInt * 100);
     }
 
