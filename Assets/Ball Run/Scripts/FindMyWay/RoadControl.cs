@@ -63,9 +63,9 @@ public class RoadControl : MonoBehaviour
                 float nextLength = nextLengths[i];
 
                 road.next[i] = CreateRoad(crossingPoint, turn, nextLength, color);
+                road.next[i].father = road;
                 // MainObjControl.Instant.blockCtrl.GetBlock(crossingPoint, turn, color, true);
             }
-
             road.arrow = arrow;
         }
         
@@ -92,6 +92,32 @@ public class RoadControl : MonoBehaviour
             if (road.block != null)
                 road.block.gameObject.SetActive(false);
         }
+    }
+
+    public void RemovePreviousPaths(RoadUnit road)
+    {
+        if (road.GetFather() == null)
+            return;
+        RoadUnit grandfatherRoad = road.GetFather().GetFather();
+        if (grandfatherRoad == null)
+        {
+            RoadUnit freeRoad = road.GetFather();
+            freeRoad.gameObject.SetActive(false);
+            if (freeRoad.arrow != null)
+                freeRoad.arrow.gameObject.SetActive(false);
+            if (freeRoad.block != null)
+                freeRoad.block.gameObject.SetActive(false);   
+            return; 
+        }
+        foreach (RoadUnit freeRoad in grandfatherRoad.next)
+        {
+            freeRoad.gameObject.SetActive(false);
+            if (freeRoad.arrow != null)
+                freeRoad.arrow.gameObject.SetActive(false);
+            if (freeRoad.block != null && freeRoad.direction != road.GetFather().direction)
+                freeRoad.block.gameObject.SetActive(false);
+        }
+        return;
     }
 
     // Return: Position of next crossing

@@ -42,7 +42,6 @@ public class ColorBlockControl : MonoBehaviour
         listBlock.Add(unit);
     }
 
-
     BlockUnit GetBlock()
     {
         if (listBlock.Count == 0)
@@ -56,7 +55,5 @@ public class ColorBlockControl : MonoBehaviour
             return newBlock;
         }
     }
-
-   
 
 }

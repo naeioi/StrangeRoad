@@ -26,8 +26,10 @@ public class SmashBtnControl : MonoBehaviour
     {
         player.Smashtime = 5.0;
         if (!player.smashing)
+        {
             MainCanvas.Instance.inGameScript.DecrScore();
             StartCoroutine(DoSmash());
+        }
     }
 
     IEnumerator DoSmash()

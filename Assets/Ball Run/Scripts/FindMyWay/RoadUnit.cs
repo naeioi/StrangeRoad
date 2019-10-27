@@ -11,6 +11,7 @@ public class RoadUnit : MonoBehaviour
     public ArrowUnit arrow;
     public BlockUnit block;
     public RoadUnit[] next;
+    public RoadUnit father;
 
     public void Set(Vector3 startPoint, GameDefine.Direction direction, float length)
     {
@@ -65,5 +66,9 @@ public class RoadUnit : MonoBehaviour
             }
 
         return null;
+    }
+    public RoadUnit GetFather()
+    {
+        return father;
     }
 }

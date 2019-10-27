@@ -28,10 +28,16 @@ public class EnterCrossingControl : MonoBehaviour
         RoadUnit oppRoad = arrow.road.GetNextByDirection(oppDir);
         roadCtrl.RemovePath(oppRoad, 1);
 
+        //Remove previours useless paths
+        roadCtrl.RemovePreviousPaths(playerCtrl.currentRoad);
+
+        
         // Update player
         GameDefine.Direction aheadDir = arrow.GetDirection();
         RoadUnit aheadRoad = arrow.road.GetNextByDirection(aheadDir);
         playerCtrl.currentRoad = aheadRoad;
+        
+
     }
 
     IEnumerator GuideBall()
