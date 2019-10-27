@@ -150,7 +150,7 @@ public class PlayerControl : MonoBehaviour
         }
         else
         {
-            speed = 10;
+            speed = 8;
         }
     }
 }
