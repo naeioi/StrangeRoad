@@ -28,10 +28,18 @@ public class ArrowControl : MonoBehaviour
     {
         return (Instantiate(arrowPrefab) as GameObject).GetComponent<ArrowUnit>();
     }
+    
+    bool isPointerOnUI()
+    {
+        return EventSystem.current.IsPointerOverGameObject() ||
+            (Input.touchCount > 0 && 
+             Input.touches[0].phase == TouchPhase.Began && 
+             EventSystem.current.IsPointerOverGameObject(Input.touches[0].fingerId));
+    }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject() && !isGameOver && MainState.GetState == MainState.State.Ingame)
+        if (Input.GetMouseButtonDown(0) && !isPointerOnUI() && !isGameOver && MainState.GetState == MainState.State.Ingame)
         // if (Input.GetMouseButtonDown(0))
         {
             if (!roting)
