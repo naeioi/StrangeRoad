@@ -34,6 +34,10 @@ public class TouchBlockCtrl : MonoBehaviour
 
         // TODO: Is recollection necessary?
         MainObjControl.Instant.blockCtrl.FreeBlock(unit);
+
+        player.levelCounter += 1;
+        if(player.levelCounter == 10)
+            player.levelUp();
     }
 
     // Update is called once per frame

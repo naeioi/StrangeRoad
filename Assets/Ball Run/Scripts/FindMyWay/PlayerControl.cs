@@ -3,6 +3,10 @@ using System.Collections;
 
 public class PlayerControl : MonoBehaviour
 {
+    public float initialSpeed = 8;
+    public float accelerateRate = 0.1f;
+    public float level;
+    public int levelCounter;
     public float speed;
     public float speedR;
     public float speedOrient;
@@ -43,7 +47,7 @@ public class PlayerControl : MonoBehaviour
         get
         {
             // return Vector3.zero;
-            return running ? speed * MovementsByDirection[(int)direction] : Vector3.zero;
+            return running ? (speed) * MovementsByDirection[(int)direction] : Vector3.zero;
         }
     }
 
@@ -88,6 +92,10 @@ public class PlayerControl : MonoBehaviour
         isGameover = false;
         isSmashing = false;
         isSlowingDown = false;
+        speed = initialSpeed;
+        levelCounter = 0;
+        level = 0.0f;
+        MainCanvas.Instance.inGameScript.SetLevelTxt(0);
     }
 
     private void Start()
@@ -121,6 +129,14 @@ public class PlayerControl : MonoBehaviour
         rigidBody.angularVelocity = angularVelocity;
     }
 
+    public void levelUp(){
+        level += 1;
+        MainCanvas.Instance.inGameScript.SetLevelTxt((int)level);
+        if(!isSlowingDown)
+            speed = initialSpeed + level * accelerateRate;
+        levelCounter = 0;
+    }
+
     public void Run()
     {
         running = true;
@@ -147,11 +163,11 @@ public class PlayerControl : MonoBehaviour
 
         if (isSlowingDown)
         {
-            speed = 4;
+            speed = initialSpeed / 2;
         }
         else
         {
-            speed = 8;
+            speed = initialSpeed + level * accelerateRate;
         }
     }
 }

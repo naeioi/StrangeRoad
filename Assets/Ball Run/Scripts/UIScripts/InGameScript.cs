@@ -7,6 +7,7 @@ public class InGameScript : MonoBehaviour
     public RectTransform rec;
     public RectTransform recScore;
     public Text scoreTxt;
+    public Text levelTxt;
     public int scoreInt;
     public float scoreDuration;
     public Vector2 to, from;
@@ -49,6 +50,11 @@ public class InGameScript : MonoBehaviour
     public void SetScoreTxt(int value)
     {
         scoreTxt.text = value.ToString();
+    }
+
+    public void SetLevelTxt(int value)
+    {
+        levelTxt.text = "Level " + value.ToString();
     }
 
     public void MoveScoreDown()
