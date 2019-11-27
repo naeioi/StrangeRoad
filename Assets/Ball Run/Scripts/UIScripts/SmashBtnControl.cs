@@ -24,12 +24,11 @@ public class SmashBtnControl : MonoBehaviour
 
     public void Smash()
     {
-        player.Smashtime = 5.0;
+        if(!MainCanvas.Instance.inGameScript.DecrScore())
+            return;
+        player.smashTime = 5.0;
         if (!player.smashing)
-        {
-            MainCanvas.Instance.inGameScript.DecrScore();
             StartCoroutine(DoSmash());
-        }
     }
 
     IEnumerator DoSmash()
@@ -38,11 +37,11 @@ public class SmashBtnControl : MonoBehaviour
         GetComponent<Image>().color = new Color(1, 1, 1); // 道具按钮激活时还原为彩色
         text.fontSize = 72;
         float waittime = 0.1f;
-        while (player.Smashtime > 0)
+        while (player.smashTime > 0)
         {
-            text.text = ((int)player.Smashtime + 1).ToString() + "s";
+            text.text = ((int)player.smashTime + 1).ToString() + "s";
             yield return new WaitForSeconds(waittime);
-            player.Smashtime -= waittime;
+            player.smashTime -= waittime;
         }
         text.fontSize = 45;
         //text.text = "Smash";

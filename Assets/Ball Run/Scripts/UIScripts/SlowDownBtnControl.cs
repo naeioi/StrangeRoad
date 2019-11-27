@@ -30,10 +30,11 @@ public class SlowDownBtnControl : MonoBehaviour
 
     public void SlowDown()
     {
-        if (!player.isSlowingDown) {
-			MainCanvas.Instance.inGameScript.DecrScore();
-			StartCoroutine(DoSlowDown());
-        }
+        if(!MainCanvas.Instance.inGameScript.DecrScore())
+            return;
+        player.slowdownTime = 5.0;
+        if (!player.slowingDown)
+            StartCoroutine(DoSlowDown());
     }
 
     IEnumerator DoSlowDown()
@@ -41,10 +42,12 @@ public class SlowDownBtnControl : MonoBehaviour
         player.SetSlowDown(true);
         GetComponent<Image>().color = new Color(1, 1, 1); // 道具按钮激活时还原为彩色
         text.fontSize = 72;
-        for (int i = 5; i > 0; i--)
+        float waittime = 0.1f;
+        while (player.slowdownTime > 0)
         {
-            text.text = i.ToString() + "s";
-            yield return new WaitForSeconds(1);
+            text.text = ((int)player.slowdownTime + 1).ToString() + "s";
+            yield return new WaitForSeconds(waittime);
+            player.slowdownTime -= waittime;
         }
         text.fontSize = 45;
         //text.text = "Slow Down"; 
@@ -52,4 +55,5 @@ public class SlowDownBtnControl : MonoBehaviour
         player.SetSlowDown(false);
         GetComponent<Image>().color = new Color(0.3f, 0.4f, 0.6f); // 激活结束后按钮置灰
     }
+
 }

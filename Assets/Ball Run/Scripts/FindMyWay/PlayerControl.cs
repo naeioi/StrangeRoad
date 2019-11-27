@@ -25,7 +25,8 @@ public class PlayerControl : MonoBehaviour
     public bool running;
     public bool isSmashing;
     public bool isSlowingDown;
-    public double Smashtime;
+    public double smashTime;
+    public double slowdownTime;
 
     public bool smashing
     {

@@ -41,10 +41,14 @@ public class InGameScript : MonoBehaviour
     }
     
     //decrease score after tapping item button
-    public void DecrScore(int value = 1)
+    public bool DecrScore(int value = 10)
     {
+        Debug.Log("scoreint:" + scoreInt.ToString() + " value:"+value.ToString());
+        if(scoreInt < value)
+            return false;
         scoreInt -= value;
         SetScoreTxt(scoreInt * 100);
+        return true;
     }
 
     public void SetScoreTxt(int value)
