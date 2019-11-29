@@ -14,7 +14,7 @@ public class SlowDownBtnControl : ItemBtnControl
         if (!player.slowingDown)
         {
             player.SetSlowDown(true);
-            play(() => player.SetSlowDown(false));
+            Play(() => player.SetSlowDown(false));
         }
     }
 }

@@ -13,7 +13,7 @@ public class SmashBtnControl : ItemBtnControl
         if (!player.smashing)
         {
             player.SetSmash(true);
-            play(() => player.SetSmash(false));
+            Play(() => player.SetSmash(false));
         }
     }
 }

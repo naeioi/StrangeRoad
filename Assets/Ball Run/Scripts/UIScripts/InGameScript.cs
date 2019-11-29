@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class InGameScript : MonoBehaviour
 {
@@ -8,10 +9,29 @@ public class InGameScript : MonoBehaviour
     public RectTransform recScore;
     public Text scoreTxt;
     public Text levelTxt;
-    public int scoreInt;
+    private int _scoreInt;
     public float scoreDuration;
     public Vector2 to, from;
     public Vector3 fromScale;
+
+    public delegate void ScoreChangeListener(int score);
+    public HashSet<ScoreChangeListener> scoreChangeListeners;
+
+    public int scoreInt
+    {
+        get => _scoreInt;
+        set
+        {
+            _scoreInt = value;
+            foreach (var listener in scoreChangeListeners)
+                listener(value);
+        }
+    }
+
+    private void Awake()
+    {
+        scoreChangeListeners = new HashSet<ScoreChangeListener>();
+    }
 
     public void Reset(bool isActive)
     {
@@ -26,8 +46,6 @@ public class InGameScript : MonoBehaviour
     {
         gameObject.SetActive(isActive);
     }
-
-   
         
     public void Pause()
     {

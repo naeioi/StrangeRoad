@@ -12,8 +12,10 @@ public class ItemBtnControl : MonoBehaviour
     public int effectiveDuration;
     public int price;
 
+    protected bool playing;
     protected TextMeshProUGUI text;
     protected GameObject priceUI;
+    protected float countdown;
 
     protected PlayerControl player
     {
@@ -23,28 +25,65 @@ public class ItemBtnControl : MonoBehaviour
         }
     }
 
+    protected bool available
+    {
+        get
+        {
+            return MainCanvas.Instance.inGameScript.scoreInt * 100 >= price;
+        }
+    }
+
+    protected enum State { Unavailable, Available, Active };
+    protected State state
+    {
+        get
+        {
+            if (playing) return State.Active;
+            else return available ? State.Available : State.Unavailable;
+        }
+    }
+
+    void updateColor()
+    {
+        var image = GetComponent<Image>();
+        if (state == State.Unavailable)
+            image.color = new Color(0.3f, 0.4f, 0.6f);
+        else if (state == State.Available)
+            image.color = new Color(1, 1, 1);
+        else if (state == State.Active)
+            image.color = new Color(1, 0.5f, 0.5f);
+    }
+
     private void Start()
     {
-        GetComponent<Image>().color = new Color(0.3f, 0.4f, 0.6f); // 初始按钮置灰
+        updateColor();
         text = GetComponentInChildren<TextMeshProUGUI>();
         priceUI = GetComponentsInChildren<Transform>().Where(r => r.tag == "ItemPrice").FirstOrDefault().gameObject;
         priceUI.GetComponentInChildren<Text>().text = price.ToString();
-
+        MainCanvas.Instance.inGameScript.scoreChangeListeners.Add(value => updateColor());
     }
 
-    protected void play(ItemFinishAction callback)
+    protected void Play(ItemFinishAction callback)
     {
         StartCoroutine(DoItem(callback));
     }
 
+    void WalletUpdated()
+    {
+        if (playing) return;
+        updateColor();
+    }
+
     IEnumerator DoItem(ItemFinishAction callback)
     {
-        GetComponent<Image>().color = new Color(1, 1, 1); // 道具按钮激活时还原为彩色
+        playing = true;
+        updateColor();
 
         priceUI.SetActive(false);
 
         text.fontSize = 72;
-        float waittime = 0.1f, countdown = effectiveDuration;
+        countdown = effectiveDuration;
+        float waittime = 0.1f;
         while (countdown > 0)
         {
             text.text = ((int)countdown + 1).ToString() + "s";
@@ -54,9 +93,10 @@ public class ItemBtnControl : MonoBehaviour
         text.fontSize = 45;
         
         text.text = "";  // 清除读秒
-        GetComponent<Image>().color = new Color(0.3f, 0.4f, 0.6f); // 激活结束后按钮置灰
-
         priceUI.SetActive(true);
+        playing = false;
+        updateColor();
+
         callback();
     }
 }
