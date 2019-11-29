@@ -88,6 +88,8 @@ public class ItemBtnControl : MonoBehaviour
         {
             text.text = ((int)countdown + 1).ToString() + "s";
             yield return new WaitForSeconds(waittime);
+            if (countdown >= 1f && countdown - waittime < 1f)
+                GetComponent<Shakable>().Shake();
             countdown -= waittime;
         }
         text.fontSize = 45;
