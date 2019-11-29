@@ -4,49 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class SmashBtnControl : MonoBehaviour
+public class SmashBtnControl : ItemBtnControl
 {
-    TextMeshProUGUI text;
-
-    PlayerControl player
-    {
-        get
-        {
-            return MainObjControl.Instant.playerCtrl;
-        }
-    }
-
-    private void Start()
-    {
-        GetComponent<Image>().color = new Color(0.3f, 0.4f, 0.6f); // 初始按钮置灰
-        text = GetComponentInChildren<TextMeshProUGUI>();
-    }
-
     public void Smash()
     {
-        if(!MainCanvas.Instance.inGameScript.DecrScore())
+        if(!MainCanvas.Instance.inGameScript.DecrScore(price / 100))
             return;
-        player.smashTime = 5.0;
         if (!player.smashing)
-            StartCoroutine(DoSmash());
-    }
-
-    IEnumerator DoSmash()
-    {
-        player.SetSmash(true);
-        GetComponent<Image>().color = new Color(1, 1, 1); // 道具按钮激活时还原为彩色
-        text.fontSize = 72;
-        float waittime = 0.1f;
-        while (player.smashTime > 0)
         {
-            text.text = ((int)player.smashTime + 1).ToString() + "s";
-            yield return new WaitForSeconds(waittime);
-            player.smashTime -= waittime;
+            player.SetSmash(true);
+            play(() => player.SetSmash(false));
         }
-        text.fontSize = 45;
-        //text.text = "Smash";
-        text.text = "";  // 清除读秒
-        player.SetSmash(false);
-        GetComponent<Image>().color = new Color(0.3f, 0.4f, 0.6f); // 激活结束后按钮置灰
     }
 }

@@ -25,7 +25,6 @@ public class PlayerControl : MonoBehaviour
     public bool running;
     public bool isSmashing;
     public bool isSlowingDown;
-    public double smashTime;
     public double slowdownTime;
 
     public bool smashing
@@ -96,7 +95,7 @@ public class PlayerControl : MonoBehaviour
         speed = initialSpeed;
         levelCounter = 0;
         level = 0.0f;
-        MainCanvas.Instance.inGameScript.SetLevelTxt(0);
+        MainCanvas.Instance.inGameScript.SetLevelTxt(1);
     }
 
     private void Start()
@@ -132,7 +131,7 @@ public class PlayerControl : MonoBehaviour
 
     public void levelUp(){
         level += 1;
-        MainCanvas.Instance.inGameScript.SetLevelTxt((int)level);
+        MainCanvas.Instance.inGameScript.SetLevelTxt((int)level+1);
         if(!isSlowingDown)
             speed = initialSpeed + level * accelerateRate;
         levelCounter = 0;
