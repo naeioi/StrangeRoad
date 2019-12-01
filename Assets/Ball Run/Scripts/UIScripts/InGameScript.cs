@@ -75,6 +75,17 @@ public class InGameScript : MonoBehaviour
         int incrScore = isDoublingScore ? 2 * value : value;
         scoreInt += incrScore;
         SetScoreTxt(scoreInt * 100);
+        PlayScoreIncr(incrScore * 100);
+    }
+
+    void PlayScoreIncr(int incrScore)
+    {
+        PlayerControl player = MainObjControl.Instant.playerCtrl;
+        MainObjControl.Instant.scoreEffectControl.Play(
+            player.transform.position, 
+            player.direction, 
+            "+ " + incrScore.ToString(),
+            isDoublingScore ? new Color(1f, 0.1f, 0.1f) : Color.grey);
     }
     
     //decrease score after tapping item button

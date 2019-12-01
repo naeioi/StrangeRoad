@@ -9,6 +9,7 @@ public class MainObjControl : MonoBehaviour
     static MainObjControl main;
  
     public BoomControl boomCtrl;
+    public ScoreEffectControl scoreEffectControl;
 
     public RoadControl roadCtrl;
     public PlayerControl playerCtrl;
