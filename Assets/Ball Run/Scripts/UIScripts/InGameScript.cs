@@ -14,8 +14,22 @@ public class InGameScript : MonoBehaviour
     public Vector2 to, from;
     public Vector3 fromScale;
 
+    public DiamonBtnControl diamondCtrl;
+    public int _diamondCount;
+    public bool isDoublingScore;
+
     public delegate void ScoreChangeListener(int score);
     public HashSet<ScoreChangeListener> scoreChangeListeners;
+
+    public int diamondCount
+    {
+        get => _diamondCount;
+        set
+        {
+            _diamondCount = value;
+            diamondCtrl.DiamondCountUpdated();
+        }
+    }
 
     public int scoreInt
     {
@@ -30,12 +44,16 @@ public class InGameScript : MonoBehaviour
 
     private void Awake()
     {
+        isDoublingScore = false;
+        diamondCount = 0;
         scoreChangeListeners = new HashSet<ScoreChangeListener>();
     }
 
     public void Reset(bool isActive)
     {
         scoreInt = 0;
+        isDoublingScore = false;
+        diamondCount = 0;
         SetScoreTxt(0);
         // recScore.anchoredPosition = from;
         // recScore.localScale = fromScale;
@@ -54,7 +72,8 @@ public class InGameScript : MonoBehaviour
 
     public void IncrScore(int value = 1)
     {
-        scoreInt += value;
+        int incrScore = isDoublingScore ? 2 * value : value;
+        scoreInt += incrScore;
         SetScoreTxt(scoreInt * 100);
     }
     

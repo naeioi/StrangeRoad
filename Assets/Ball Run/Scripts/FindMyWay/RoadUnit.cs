@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class RoadUnit : MonoBehaviour
 {
@@ -10,8 +11,14 @@ public class RoadUnit : MonoBehaviour
 
     public ArrowUnit arrow;
     public BlockUnit block;
+    public List<BlockUnit> extraBlocks;
     public RoadUnit[] next;
     public RoadUnit father;
+
+    private void Awake()
+    {
+        extraBlocks = new List<BlockUnit>();
+    }
 
     public void Set(Vector3 startPoint, GameDefine.Direction direction, float length)
     {

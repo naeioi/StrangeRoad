@@ -13,8 +13,8 @@ public class ItemBtnControl : MonoBehaviour
     public int price;
 
     protected bool playing;
-    protected TextMeshProUGUI text;
-    protected GameObject priceUI;
+    protected TextMeshProUGUI countdownText;
+    protected GameObject explainUI;
     protected float countdown;
 
     protected PlayerControl player
@@ -25,7 +25,7 @@ public class ItemBtnControl : MonoBehaviour
         }
     }
 
-    protected bool available
+    protected virtual bool available
     {
         get
         {
@@ -43,7 +43,7 @@ public class ItemBtnControl : MonoBehaviour
         }
     }
 
-    void updateColor()
+    protected void updateColor()
     {
         var image = GetComponent<Image>();
         if (state == State.Unavailable)
@@ -57,9 +57,9 @@ public class ItemBtnControl : MonoBehaviour
     private void Start()
     {
         updateColor();
-        text = GetComponentInChildren<TextMeshProUGUI>();
-        priceUI = GetComponentsInChildren<Transform>().Where(r => r.tag == "ItemPrice").FirstOrDefault().gameObject;
-        priceUI.GetComponentInChildren<Text>().text = price.ToString();
+        countdownText = GetComponentInChildren<TextMeshProUGUI>();
+        explainUI = GetComponentsInChildren<Transform>().Where(r => r.tag == "ItemPrice").FirstOrDefault().gameObject;
+        explainUI.GetComponentInChildren<Text>().text = price.ToString();
         MainCanvas.Instance.inGameScript.scoreChangeListeners.Add(value => updateColor());
     }
 
@@ -79,23 +79,23 @@ public class ItemBtnControl : MonoBehaviour
         playing = true;
         updateColor();
 
-        priceUI.SetActive(false);
+        explainUI.SetActive(false);
 
-        text.fontSize = 72;
+        countdownText.fontSize = 72;
         countdown = effectiveDuration;
         float waittime = 0.1f;
         while (countdown > 0)
         {
-            text.text = ((int)countdown + 1).ToString() + "s";
+            countdownText.text = ((int)countdown + 1).ToString() + "s";
             yield return new WaitForSeconds(waittime);
             if (countdown >= 1f && countdown - waittime < 1f)
                 GetComponent<Shakable>().Shake();
             countdown -= waittime;
         }
-        text.fontSize = 45;
+        countdownText.fontSize = 45;
         
-        text.text = "";  // 清除读秒
-        priceUI.SetActive(true);
+        countdownText.text = "";  // 清除读秒
+        explainUI.SetActive(true);
         playing = false;
         updateColor();
 

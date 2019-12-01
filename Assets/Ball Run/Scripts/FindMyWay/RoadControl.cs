@@ -89,6 +89,8 @@ public class RoadControl : MonoBehaviour
                 road.arrow.gameObject.SetActive(false);
             if (road.block != null)
                 road.block.gameObject.SetActive(false);
+            foreach (BlockUnit blk in road.extraBlocks)
+                blk.gameObject.SetActive(false);
         }
     }
 
@@ -104,7 +106,9 @@ public class RoadControl : MonoBehaviour
             if (freeRoad.arrow != null)
                 freeRoad.arrow.gameObject.SetActive(false);
             if (freeRoad.block != null)
-                freeRoad.block.gameObject.SetActive(false);   
+                freeRoad.block.gameObject.SetActive(false);
+            foreach (BlockUnit blk in freeRoad.extraBlocks)
+                blk.gameObject.SetActive(false);
             return; 
         }
         foreach (RoadUnit freeRoad in grandfatherRoad.next)
@@ -114,23 +118,29 @@ public class RoadControl : MonoBehaviour
                 freeRoad.arrow.gameObject.SetActive(false);
             if (freeRoad.block != null && freeRoad.direction != road.GetFather().direction)
                 freeRoad.block.gameObject.SetActive(false);
+            foreach (BlockUnit blk in freeRoad.extraBlocks)
+                blk.gameObject.SetActive(false);
         }
         return;
     }
 
     // Return: Position of next crossing
-    RoadUnit CreateRoad(Vector3 crossingPoint, GameDefine.Direction direction, float length, bool color)
+    RoadUnit CreateRoad(Vector3 crossingPoint, GameDefine.Direction direction, float length, bool correctRoad)
     {
         // Add path to listRoadActive
         // Add block to listBlock
 
         bool onRoad = true;
         RoadUnit newRoad = GetRoad();
-        BlockUnit unit = MainObjControl.Instant.blockCtrl.GetBlock(crossingPoint, direction, color, onRoad);
+        BlockUnit unit = MainObjControl.Instant.blockCtrl.GetEntryBlock(crossingPoint, direction, correctRoad, onRoad);
 
         newRoad.Set(crossingPoint, direction, length);
         newRoad.block = unit;
         unit.road = newRoad;
+
+        // Randomly generate a diamond on the wrong road
+        if (!correctRoad /*&& Random.value < 0.3*/)
+            newRoad.extraBlocks.Add(MainObjControl.Instant.blockCtrl.GetExtraBlock(crossingPoint, direction));
 
         activeRoads.Add(newRoad);
         activeBlocks.Add(unit);

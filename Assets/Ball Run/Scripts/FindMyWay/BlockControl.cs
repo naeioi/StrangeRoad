@@ -6,6 +6,7 @@ public class BlockControl : MonoBehaviour
 {
     public GameObject obsPrefab;
     public GameObject bonusPrefab;
+    public GameObject diamondPrefab;
 
     public List<BlockUnit> idleBlock;
     public float tall, width, size;
@@ -17,21 +18,20 @@ public class BlockControl : MonoBehaviour
         Vector3.forward * GameDefine.blockDistance, // Forward
     };
 
-    public BlockUnit GetBlock(Vector3 crossingPos, GameDefine.Direction dir, bool color, bool onRoad)
+    public BlockUnit GetEntryBlock(Vector3 crossingPos, GameDefine.Direction dir, bool correctRoad, bool onRoad)
     {
         Vector3 blockPos = crossingPos;
         blockPos += BlockOffset[(int)dir];
-        blockPos.y = onRoad ?  color ? 2.6f : 2.4f : -3.0f;
+        blockPos.y = onRoad ?  correctRoad ? 2.6f : 2.4f : -3.0f;
 
-        BlockUnit unit = GetBlock(color);
+        BlockUnit unit = GetEntryBlock(correctRoad);
         unit.transform.position = blockPos;
-        unit.SetColor(color);
         unit.SetVisible(true);
         unit.crossingPos = crossingPos;
         unit.direction = dir;
-        unit.color = color;
+        unit.color = correctRoad;
 
-        if (!color)
+        if (!correctRoad)
         {
             // TODO: Refactor, put scaling logic in ObsBlock
             if (dir != GameDefine.Direction.Forward)
@@ -47,14 +47,30 @@ public class BlockControl : MonoBehaviour
         return unit;
     }
 
+    public BlockUnit GetExtraBlock(Vector3 crossingPos, GameDefine.Direction dir)
+    {
+        // Currently, diamond is the only extra block available
+        Vector3 blockPos = crossingPos;
+        blockPos += BlockOffset[(int)dir] * 2;
+        blockPos.y = 2.6f;
+
+        BlockUnit unit = Instantiate(diamondPrefab).GetComponent<BlockUnit>();
+        unit.transform.position = blockPos;
+        unit.SetVisible(true);
+        unit.crossingPos = crossingPos;
+        unit.direction = dir;
+
+        return unit;
+    }
+
     public void FreeBlock(BlockUnit unit)
     {
         idleBlock.Add(unit);
     }
 
-    BlockUnit GetBlock(bool color)
+    BlockUnit GetEntryBlock(bool correctRoad)
     {
-        if (color)
+        if (correctRoad)
             return (Instantiate(bonusPrefab) as GameObject).GetComponent<BlockUnit>(); 
         else
             return (Instantiate(obsPrefab) as GameObject).GetComponent<BlockUnit>();
