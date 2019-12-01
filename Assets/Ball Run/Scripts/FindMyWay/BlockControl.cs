@@ -51,7 +51,7 @@ public class BlockControl : MonoBehaviour
     {
         // Currently, diamond is the only extra block available
         Vector3 blockPos = crossingPos;
-        blockPos += BlockOffset[(int)dir] * 2;
+        blockPos += BlockOffset[(int)dir] * 1.5f;
         blockPos.y = 2.6f;
 
         BlockUnit unit = Instantiate(diamondPrefab).GetComponent<BlockUnit>();

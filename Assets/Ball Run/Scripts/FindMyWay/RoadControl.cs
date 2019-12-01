@@ -139,7 +139,7 @@ public class RoadControl : MonoBehaviour
         unit.road = newRoad;
 
         // Randomly generate a diamond on the wrong road
-        if (!correctRoad /*&& Random.value < 0.3*/)
+        if (!correctRoad && Random.value < 0.5)
             newRoad.extraBlocks.Add(MainObjControl.Instant.blockCtrl.GetExtraBlock(crossingPoint, direction));
 
         activeRoads.Add(newRoad);
