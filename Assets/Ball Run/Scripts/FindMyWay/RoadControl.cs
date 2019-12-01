@@ -7,9 +7,7 @@ public class RoadControl : MonoBehaviour
     public RoadUnit roadPrefab;
 
     public List<RoadUnit> activeRoads;
-    public List<RoadUnit> idleRoads;
     public List<BlockUnit> activeBlocks;
-    public List<BlockUnit> idleBlocks;
 
     public GameDefine.Direction turn;
     public PlayerControl player;

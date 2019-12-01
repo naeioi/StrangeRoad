@@ -30,18 +30,18 @@ public class BlockUnit : MonoBehaviour
 
     public void SetColor(bool isType1)
     {
-        if (isType1)
-        {
-            mat.SetColor("_TopColor", top1);
-            mat.SetColor("_FrontColor", front1);
-            mat.SetColor("_LeftColor", left1);
-        }
-        else
-        {
-            mat.SetColor("_TopColor", top2);
-            mat.SetColor("_FrontColor", front2);
-            mat.SetColor("_LeftColor", left2);
-        }
+        //if (isType1)
+        //{
+        //    mat.SetColor("_TopColor", top1);
+        //    mat.SetColor("_FrontColor", front1);
+        //    mat.SetColor("_LeftColor", left1);
+        //}
+        //else
+        //{
+        //    mat.SetColor("_TopColor", top2);
+        //    mat.SetColor("_FrontColor", front2);
+        //    mat.SetColor("_LeftColor", left2);
+        //}
 
     }
 }

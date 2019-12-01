@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class TouchBlockCtrl : MonoBehaviour
 {
+    public enum BlockType { Barrier, Bonus };
+    public BlockType blockType;
+    public bool doExtendRoad;
+
     BlockUnit unit;
     PlayerControl player;
 
@@ -17,11 +21,15 @@ public class TouchBlockCtrl : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // Boom effect
-        MainObjControl.Instant.boomCtrl.ShowBoom(transform);
+        Transform boomTrans = transform;
+        boomTrans.eulerAngles =
+            unit.direction == GameDefine.Direction.Forward ? Vector3.zero :
+            unit.direction == GameDefine.Direction.Left ? new Vector3(0, 90f, 0) : new Vector3(0, -90f, 0);
+        MainObjControl.Instant.boomCtrl.ShowBoom(boomTrans);
         unit.SetVisible(false);
 
         // Increment score
-        if (unit.color == true || player.smashing)
+        if (blockType == BlockType.Bonus || player.smashing)
             MainCanvas.Instance.inGameScript.IncrScore();
         else
         {
@@ -29,15 +37,18 @@ public class TouchBlockCtrl : MonoBehaviour
             MainCanvas.Instance.lostScript.GameOver();
         }
 
-        // Create future path
-        MainObjControl.Instant.roadCtrl.ExtendPath(unit.road, 2);
+        if (doExtendRoad)
+        {
+            // Create future path
+            MainObjControl.Instant.roadCtrl.ExtendPath(unit.road, 2);
 
-        // TODO: Is recollection necessary?
-        MainObjControl.Instant.blockCtrl.FreeBlock(unit);
+            // TODO: Is recollection necessary?
+            MainObjControl.Instant.blockCtrl.FreeBlock(unit);
 
-        player.levelCounter += 1;
-        if(player.levelCounter == 10)
-            player.levelUp();
+            player.levelCounter += 1;
+            if (player.levelCounter == 10)
+                player.levelUp();
+        }
     }
 
     // Update is called once per frame

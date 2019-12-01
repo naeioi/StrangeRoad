@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class BlockControl : MonoBehaviour
 {
-    public GameObject blockPrefab;
+    public GameObject obsPrefab;
+    public GameObject bonusPrefab;
 
     public List<BlockUnit> idleBlock;
     public float tall, width, size;
@@ -20,9 +21,9 @@ public class BlockControl : MonoBehaviour
     {
         Vector3 blockPos = crossingPos;
         blockPos += BlockOffset[(int)dir];
-        blockPos.y = onRoad ? 2.4f : -3.0f;
+        blockPos.y = onRoad ?  color ? 2.6f : 2.4f : -3.0f;
 
-        BlockUnit unit = GetBlock();
+        BlockUnit unit = GetBlock(color);
         unit.transform.position = blockPos;
         unit.SetColor(color);
         unit.SetVisible(true);
@@ -30,41 +31,17 @@ public class BlockControl : MonoBehaviour
         unit.direction = dir;
         unit.color = color;
 
-        if (dir != GameDefine.Direction.Forward)
+        if (!color)
         {
-            unit.transform.localScale = new Vector3(width, tall, size);
-        }
-        else
-        {
-            unit.transform.localScale = new Vector3(size, tall, width);
-        }
-
-        return unit;
-    }
-
-    public BlockUnit GetBlock(Vector3 pos, bool isType1, bool isLeft, bool isUp)
-    {
-        if (isUp)
-        {
-            pos.y = 2.4f;
-        }
-        else
-        {
-            pos.y = -3;
-        }
-
-        BlockUnit unit = GetBlock();
-        unit.transform.position = pos;
-        unit.SetColor(isType1);
-        unit.SetVisible(true);
-
-        if (isLeft)
-        {
-            unit.transform.localScale = new Vector3(width, tall, size);
-        }
-        else
-        {
-            unit.transform.localScale = new Vector3(size, tall, width);
+            // TODO: Refactor, put scaling logic in ObsBlock
+            if (dir != GameDefine.Direction.Forward)
+            {
+                unit.transform.localScale = new Vector3(width, tall, size);
+            }
+            else
+            {
+                unit.transform.localScale = new Vector3(size, tall, width);
+            }
         }
 
         return unit;
@@ -75,18 +52,12 @@ public class BlockControl : MonoBehaviour
         idleBlock.Add(unit);
     }
 
-    BlockUnit GetBlock()
+    BlockUnit GetBlock(bool color)
     {
-        if (idleBlock.Count == 0)
-        {
-            return (Instantiate(blockPrefab) as GameObject).GetComponent<BlockUnit>(); 
-        }
+        if (color)
+            return (Instantiate(bonusPrefab) as GameObject).GetComponent<BlockUnit>(); 
         else
-        {
-            BlockUnit newBlock = idleBlock[idleBlock.Count - 1];
-            idleBlock.RemoveAt(idleBlock.Count - 1);
-            return newBlock;
-        }
+            return (Instantiate(obsPrefab) as GameObject).GetComponent<BlockUnit>();
     }
 
    

@@ -19,7 +19,6 @@ public class RotateY : MonoBehaviour {
 	
 	void Update ()
 	{
-		transform.Rotate (new Vector3 (0, -speed * rotateRight * Time.deltaTime, 0), Space.Self);
-		
+		transform.Rotate (new Vector3 (0, -speed * rotateRight * Time.deltaTime, 0), Space.World);
 	}
 }

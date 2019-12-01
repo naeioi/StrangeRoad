@@ -14,14 +14,7 @@ public class OrangeMest : MonoBehaviour
     public void Boom(Transform trans)
     {
         transform.position = trans.position;
-        if (trans.localScale.x == 1.2f)
-        {
-            transform.eulerAngles = Vector3.zero;
-        }
-        else
-        {
-            transform.eulerAngles = R;
-        }
+        transform.rotation = trans.rotation;
        
         Reset(trans.GetComponent<MeshRenderer>().material);
     }
